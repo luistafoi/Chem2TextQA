@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+*.egg
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+
+# Environment
+.env
+*.env.local
+
+# Conda
+.conda/
+
+# IDE
+.vscode/
+.idea/
+
+# Data outputs (can be large)
+data/*.jsonl
+data/*.json
+!data/.gitkeep
+
+# OS
+.DS_Store
+Thumbs.db

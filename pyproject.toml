@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "chem2textqa"
+version = "0.1.0"
+description = "AI-augmented dataset pipeline for scraping scientific papers and patents related to chemical structures and drug development."
+requires-python = ">=3.11"
+license = "Apache-2.0"
+dependencies = [
+    "biopython>=1.83",
+    "requests>=2.31",
+    "beautifulsoup4>=4.12",
+    "lxml>=5.0",
+    "pydantic>=2.5",
+    "pydantic-settings>=2.1",
+    "python-dotenv>=1.0",
+    "python-epo-ops-client>=4.0",
+    "click>=8.1",
+    "tqdm>=4.66",
+    "tenacity>=8.2",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.4", "pytest-cov", "ruff>=0.2", "mypy", "responses>=0.24"]
+serpapi = ["google-search-results>=2.4"]
+
+[project.scripts]
+chem2textqa = "chem2textqa.cli:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.setuptools.packages.find]
+include = ["chem2textqa*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
