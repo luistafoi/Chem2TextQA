@@ -3,7 +3,6 @@ from pathlib import Path
 import logging
 
 from chem2textqa.config.settings import Settings
-from chem2textqa.models.document import ScientificDocument
 
 
 class BaseScraper(ABC):
@@ -16,18 +15,7 @@ class BaseScraper(ABC):
     @property
     @abstractmethod
     def name(self) -> str:
-        """Short identifier used in logging and file names (e.g. 'pubmed')."""
-        ...
-
-    @abstractmethod
-    def search(
-        self,
-        query: str,
-        max_results: int = 100,
-        date_from: str | None = None,
-        date_to: str | None = None,
-    ) -> list[ScientificDocument]:
-        """Execute a search and return normalized documents."""
+        """Short identifier used in logging and file names."""
         ...
 
     def default_output_path(self) -> Path:

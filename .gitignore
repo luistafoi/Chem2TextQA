@@ -20,10 +20,21 @@ build/
 .vscode/
 .idea/
 
-# Data outputs (can be large)
+# All bulk / produced data — never push (GB-scale)
+data/bulk/
+data/filtered/
+data/preview/
+data/qa_pipeline/
 data/*.jsonl
 data/*.json
 !data/.gitkeep
+
+# External reference material kept locally only
+pipeline/
+smiles_qa_demo.ipynb
+
+# Local dev notes (not for distribution)
+CLAUDE.md
 
 # OS
 .DS_Store

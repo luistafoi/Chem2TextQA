@@ -1,21 +1,18 @@
 from chem2textqa.scrapers.base import BaseScraper
-from chem2textqa.scrapers.epo import EPOScraper
-from chem2textqa.scrapers.google_patents import GooglePatentsScraper
+from chem2textqa.scrapers.pubchem import PubChemScraper
 from chem2textqa.scrapers.pubmed import PubMedScraper
-from chem2textqa.scrapers.uspto import USPTOScraper
+from chem2textqa.scrapers.pmc import PMCScraper
 
 SCRAPER_REGISTRY: dict[str, type[BaseScraper]] = {
+    "pubchem": PubChemScraper,
     "pubmed": PubMedScraper,
-    "google_patents": GooglePatentsScraper,
-    "uspto": USPTOScraper,
-    "epo": EPOScraper,
+    "pmc": PMCScraper,
 }
 
 __all__ = [
     "BaseScraper",
     "SCRAPER_REGISTRY",
+    "PubChemScraper",
     "PubMedScraper",
-    "GooglePatentsScraper",
-    "USPTOScraper",
-    "EPOScraper",
+    "PMCScraper",
 ]

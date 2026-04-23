@@ -11,19 +11,9 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    # NCBI / PubMed
+    # NCBI / PubMed / PMC
     ncbi_api_key: Optional[str] = None
     ncbi_email: str = "chem2textqa@example.com"
-
-    # USPTO PatentsView
-    uspto_api_key: Optional[str] = None
-
-    # EPO Open Patent Services
-    epo_key: Optional[str] = None
-    epo_secret: Optional[str] = None
-
-    # SerpAPI (optional, for Google Patents)
-    serpapi_key: Optional[str] = None
 
     # Storage
     output_dir: Path = Path("./data")
@@ -31,10 +21,13 @@ class Settings(BaseSettings):
     # Logging
     log_level: str = "INFO"
 
+    # PubChem rate limit (5 req/sec without key)
+    pubchem_rate_limit: float = 5.0
+
     @property
-    def ncbi_rate_limit(self) -> int:
+    def ncbi_rate_limit(self) -> float:
         """Requests per second for NCBI: 10 with API key, 3 without."""
-        return 10 if self.ncbi_api_key else 3
+        return 10.0 if self.ncbi_api_key else 3.0
 
 
 def get_settings() -> Settings:

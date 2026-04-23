@@ -1,4 +1,3 @@
-from io import StringIO
 from unittest.mock import MagicMock, patch
 
 from chem2textqa.config.settings import Settings
@@ -17,6 +16,7 @@ MH  - Platelet Aggregation/drug effects
 OT  - aspirin
 OT  - COX-1
 AID - 10.1234/test.2024.001 [doi]
+PMC - PMC9876543
 PT  - Journal Article
 LA  - eng
 
@@ -29,8 +29,6 @@ def _make_settings() -> Settings:
 
 @patch("chem2textqa.scrapers.pubmed.Entrez")
 def test_pubmed_search_basic(mock_entrez):
-    """PubMed scraper correctly maps MEDLINE records to ScientificDocument."""
-    # Mock esearch
     mock_search_handle = MagicMock()
     mock_entrez.esearch.return_value = mock_search_handle
     mock_entrez.read.return_value = {
@@ -39,7 +37,6 @@ def test_pubmed_search_basic(mock_entrez):
         "QueryKey": "1",
     }
 
-    # Mock efetch
     mock_fetch_handle = MagicMock()
     mock_fetch_handle.read.return_value = MOCK_MEDLINE_RECORD
     mock_entrez.efetch.return_value = mock_fetch_handle
@@ -55,21 +52,36 @@ def test_pubmed_search_basic(mock_entrez):
     assert len(doc.authors) == 2
     assert doc.authors[0].name == "Smith J"
 
-    # Check identifiers
     id_types = {i.type for i in doc.identifiers}
     assert "pmid" in id_types
     assert "doi" in id_types
+    assert "pmcid" in id_types
 
-    # Check chemical entities
     assert any("Aspirin" in c for c in doc.chemical_entities)
-
-    # Check metadata
     assert "mesh_headings" in doc.metadata
+    assert doc.metadata["pmc_id"] == "PMC9876543"
+
+
+@patch("chem2textqa.scrapers.pubmed.Entrez")
+def test_pubmed_fetch_by_pmids(mock_entrez):
+    mock_entrez.epost.return_value = MagicMock()
+    mock_entrez.read.return_value = {
+        "WebEnv": "fake_webenv",
+        "QueryKey": "1",
+    }
+    mock_fetch_handle = MagicMock()
+    mock_fetch_handle.read.return_value = MOCK_MEDLINE_RECORD
+    mock_entrez.efetch.return_value = mock_fetch_handle
+
+    scraper = PubMedScraper(_make_settings())
+    docs = scraper.fetch_by_pmids([12345678])
+
+    assert len(docs) == 1
+    assert docs[0].title == "Mechanism of action of aspirin on platelet aggregation"
 
 
 @patch("chem2textqa.scrapers.pubmed.Entrez")
 def test_pubmed_sets_entrez_email(mock_entrez):
-    """Scraper sets Entrez.email from settings."""
     PubMedScraper(Settings(ncbi_email="myemail@example.com"))
     assert mock_entrez.email == "myemail@example.com"
 

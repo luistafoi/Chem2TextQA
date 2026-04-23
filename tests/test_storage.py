@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from chem2textqa.models.document import ScientificDocument, SourceType
 from chem2textqa.storage.jsonl import append_documents, count_documents, read_documents
 
