@@ -36,6 +36,24 @@ smiles_qa_demo.ipynb
 # Local dev notes (not for distribution)
 CLAUDE.md
 
+# Experimental / historical shell scripts — kept locally for
+# reproducibility, not for distribution. The canonical pipeline scripts
+# (run_build_dataset_v2.sh, run_cleanup_v2.sh, run_pmc_download.sh,
+# run_phase0_full_premium.sh, run_qa_full_premium.sh, run_1000_pilot.sh,
+# run_ablation_probe.sh, run_smiles_swap_probe.sh, run_softrule_probes.sh)
+# stay tracked — these don't.
+run_100_pilot_improved.sh
+run_20_pilot_softrule.sh
+run_500_pilot.sh
+run_500_pilot_kimi_only.sh
+run_crawl.sh
+run_qa_all.sh
+run_qa_experiment.sh
+run_qa_phase0.sh
+run_qa_phase1.sh
+run_qa_phase2.sh
+run_qa_phase3.sh
+
 # OS
 .DS_Store
 Thumbs.db
