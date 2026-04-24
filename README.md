@@ -5,6 +5,17 @@ Training-data pipeline that links drug and metabolite chemical structures
 cross-validated question/answer pairs tagged across mechanism, therapeutic
 use, toxicity, metabolism, drug interactions, and chemistry.
 
+**Intended evaluative role** → [EVALUATIVE_ROLE.md](EVALUATIVE_ROLE.md)
+(instruction-tuning resource for medicinal-chemistry reasoning; **not** a
+benchmark, **not** a clinical resource).
+
+**Critical reading before using this data** →
+[LIMITATIONS.md](LIMITATIONS.md) and [RESPONSIBLE_AI.md](RESPONSIBLE_AI.md).
+
+**Dataset documentation** → [DATASHEET.md](DATASHEET.md),
+[CONTAMINATION.md](CONTAMINATION.md), [LICENSE-DATA.md](LICENSE-DATA.md),
+[croissant.json](croissant.json), [CHANGELOG.md](CHANGELOG.md).
+
 Two pipelines live in this repo:
 
 1. **Data building** — bulk FTP downloads of PubChem, PubMed, and PMC are

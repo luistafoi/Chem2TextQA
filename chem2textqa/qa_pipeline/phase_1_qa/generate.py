@@ -91,10 +91,29 @@ def _validate_qa_output(parsed: dict) -> list[dict] | None:
         if not question.strip() or not answer.strip():
             return None
         topic = (p.get("topic") or "").strip() or "other"
+
+        # Evidence provenance: optional list of integer evidence sentence
+        # IDs the model cited as supporting this answer. Coerce to a sorted
+        # unique list of ints; drop anything non-numeric. Missing → [].
+        raw_ids = p.get("evidence_ids") or []
+        evidence_ids: list[int] = []
+        if isinstance(raw_ids, list):
+            seen = set()
+            for x in raw_ids:
+                try:
+                    v = int(x)
+                except (TypeError, ValueError):
+                    continue
+                if v not in seen:
+                    seen.add(v)
+                    evidence_ids.append(v)
+            evidence_ids.sort()
+
         cleaned.append({
             "topic": topic,
             "question": question.strip(),
             "answer": answer.strip(),
+            "evidence_ids": evidence_ids,
         })
     return cleaned
 
@@ -158,6 +177,15 @@ async def generate_for_compound(
     qa_pairs = _validate_qa_output(parsed)
     if qa_pairs is None:
         return None, "qa_pairs failed validation"
+
+    # Drop any evidence_ids that don't reference a real sentence (model
+    # occasionally fabricates IDs; ~1-2% on observed pilots). We silently
+    # filter rather than reject the pair — the rest of the answer is still
+    # usable.
+    valid_ids = {s.get("id") for s in evidence if isinstance(s, dict)}
+    for qa in qa_pairs:
+        qa["evidence_ids"] = [eid for eid in qa.get("evidence_ids", [])
+                              if eid in valid_ids]
 
     return {
         "cid": record["cid"],

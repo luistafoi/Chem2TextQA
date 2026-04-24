@@ -1,0 +1,122 @@
+{
+  "@context": {
+    "@language": "en",
+    "@vocab": "https://schema.org/",
+    "citeAs": "cr:citeAs",
+    "column": "cr:column",
+    "conformsTo": "dct:conformsTo",
+    "cr": "http://mlcommons.org/croissant/",
+    "rai": "http://mlcommons.org/croissant/RAI/",
+    "data": {"@id": "cr:data", "@type": "@json"},
+    "dataType": {"@id": "cr:dataType", "@type": "@vocab"},
+    "dct": "http://purl.org/dc/terms/",
+    "examples": {"@id": "cr:examples", "@type": "@json"},
+    "extract": "cr:extract",
+    "field": "cr:field",
+    "fileProperty": "cr:fileProperty",
+    "fileObject": "cr:fileObject",
+    "fileSet": "cr:fileSet",
+    "format": "cr:format",
+    "includes": "cr:includes",
+    "isLiveDataset": "cr:isLiveDataset",
+    "jsonPath": "cr:jsonPath",
+    "key": "cr:key",
+    "md5": "cr:md5",
+    "parentField": "cr:parentField",
+    "path": "cr:path",
+    "recordSet": "cr:recordSet",
+    "references": "cr:references",
+    "regex": "cr:regex",
+    "repeated": "cr:repeated",
+    "replace": "cr:replace",
+    "sc": "https://schema.org/",
+    "separator": "cr:separator",
+    "source": "cr:source",
+    "subField": "cr:subField",
+    "transform": "cr:transform"
+  },
+  "@type": "sc:Dataset",
+  "name": "Chem2TextQA",
+  "description": "SMILES-grounded Q&A pairs for drug-like compounds, produced by a four-phase LLM pipeline with cross-model agreement as a weak label. Structural claims derive from SMILES; functional claims are grounded silently in redacted PubMed/PMC evidence. Intended as an instruction-tuning resource for medicinal-chemistry reasoning research, not a benchmark or clinical resource.",
+  "conformsTo": "http://mlcommons.org/croissant/1.0",
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "citeAs": "@misc{chem2textqa2026, title={Chem2TextQA}, author={Anonymous}, year={2026}, note={See LICENSE-DATA.md for upstream source terms (PubChem, PubMed, PMC).}}",
+  "url": "https://huggingface.co/datasets/TBD/chem2textqa",
+  "version": "0.1.0-round1",
+  "keywords": ["chemistry", "medicinal-chemistry", "drug", "SMILES", "Q&A", "instruction-tuning", "LLM"],
+
+  "rai:dataCollection": "Bulk FTP downloads of PubChem, PubMed baseline, and PMC open-access, joined per-compound and filtered through a 7-stage cleanup. See run_build_dataset_v2.sh and run_cleanup_v2.sh.",
+  "rai:dataCollectionType": "Automated-extraction",
+  "rai:dataCollectionTimeframe": "PubMed baseline 2026; PubChem Q1 2026; PMC 2026-04 open-access snapshot",
+  "rai:dataImputationProtocol": "Missing molecular_formula / molecular_weight from CID-Mass.gz are left null; compounds with zero matching evidence sentences after redaction are dropped (30.2% of premium-tier compounds).",
+  "rai:dataPreprocessingProtocol": "Compound-name redaction to [COMPOUND] using longest-match-first synonym regex. Sentence-level dedup by redacted text. Random sampling (per-CID-seeded) to cap at 500 sentences per compound.",
+  "rai:dataManipulationProtocol": "Four-phase LLM pipeline: Phase 1 generation, Phase 2 blind re-answer, Phase 3 agreement judge. All prompts versioned in the source tree at chem2textqa/qa_pipeline/phase_*/ .",
+  "rai:dataSocialImpact": "Drug-related training data with public-health implications. A model fine-tuned on this data could produce plausible-but-incorrect clinical claims. See RESPONSIBLE_AI.md for intended use, misuse risks, and mitigations.",
+  "rai:dataBiases": [
+    "Therapeutic-area bias: oncology / CV / CNS over-represented",
+    "Approval-status bias: FDA-approved drugs vs research chemicals",
+    "Publication bias: English-language biomedical literature",
+    "Model-consensus bias: 'gold' labels reflect what two LLMs agree on, not ground truth",
+    "Training-data overlap: evidence sentences are likely in LLM pretraining corpora"
+  ],
+  "rai:dataUseCases": [
+    "Intended: instruction tuning for medicinal-chemistry LLM research.",
+    "Not intended: clinical decision support, patient-facing QA, prescribing guidance, production deployment without downstream safety validation."
+  ],
+  "rai:annotationsPerItem": "3 (Phase 1 answer, Phase 2 blind answer, Phase 3 verdict)",
+  "rai:annotatorDemographics": "No human annotators in the current release. Labels are LLM-generated. Human-annotated validation sample scheduled for Round 2.",
+  "rai:machineAnnotationTools": [
+    "google/gemini-3-flash-preview (Phase 1 generator)",
+    "moonshotai/kimi-k2.5 (Phase 2 blind re-answer)",
+    "google/gemma-4-31b-it (Phase 3 agreement judge)"
+  ],
+  "rai:personalSensitiveInformation": "None. Dataset does not contain PII. No direct patient data; drug-related clinical text is aggregate-level.",
+  "rai:safetyReport": "See RESPONSIBLE_AI.md.",
+
+  "distribution": [
+    {
+      "@type": "cr:FileObject",
+      "@id": "dataset_final_jsonl",
+      "name": "dataset_final.jsonl",
+      "description": "Full dataset — one line per compound with all Q&A pairs and verdicts.",
+      "contentUrl": "https://huggingface.co/datasets/TBD/chem2textqa/resolve/main/dataset_final.jsonl",
+      "encodingFormat": "application/jsonl",
+      "md5": "TBD"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "dataset_gold_jsonl",
+      "name": "dataset_gold.jsonl",
+      "description": "Agree-only subset — one line per compound, only Q&A with verdict=='agree'.",
+      "contentUrl": "https://huggingface.co/datasets/TBD/chem2textqa/resolve/main/dataset_gold.jsonl",
+      "encodingFormat": "application/jsonl",
+      "md5": "TBD"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "canary_set_jsonl",
+      "name": "canary_post_cutoff.jsonl",
+      "description": "Contamination canary: compounds first reported after LLM training cutoff. Test-set use only. See CONTAMINATION.md.",
+      "contentUrl": "https://huggingface.co/datasets/TBD/chem2textqa/resolve/main/canary_post_cutoff.jsonl",
+      "encodingFormat": "application/jsonl",
+      "md5": "TBD"
+    }
+  ],
+
+  "recordSet": [
+    {
+      "@type": "cr:RecordSet",
+      "@id": "compounds",
+      "name": "compounds",
+      "description": "Each record is one compound with its QA pairs.",
+      "field": [
+        {"@type": "cr:Field", "@id": "cid", "name": "cid", "dataType": "sc:Integer"},
+        {"@type": "cr:Field", "@id": "smiles", "name": "smiles", "dataType": "sc:Text"},
+        {"@type": "cr:Field", "@id": "molecular_formula", "name": "molecular_formula", "dataType": "sc:Text"},
+        {"@type": "cr:Field", "@id": "molecular_weight", "name": "molecular_weight", "dataType": "sc:Number"},
+        {"@type": "cr:Field", "@id": "num_evidence_sentences", "name": "num_evidence_sentences", "dataType": "sc:Integer"},
+        {"@type": "cr:Field", "@id": "qa_pairs", "name": "qa_pairs", "dataType": "sc:Text", "description": "JSON array of Q&A objects with {topic, question, phase1_answer, phase2_answer, verdict, judge_reasoning}."}
+      ]
+    }
+  ]
+}

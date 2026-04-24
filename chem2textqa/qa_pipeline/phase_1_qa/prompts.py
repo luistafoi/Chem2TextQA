@@ -143,10 +143,22 @@ ester, what would change?",
 (logP up ~0.5) and slightly more stable to esterase hydrolysis, blunting \
 covalent COX acetylation. Analgesic onset would slow and the irreversible \
 inhibition character would weaken, pushing the compound toward a competitive \
-mechanism."
+mechanism.",
+      "evidence_ids": [3, 7, 12]
     }
   ]
 }
+
+EVIDENCE PROVENANCE (required for dataset auditing)
+- For each Q&A where the answer's functional claims draw on the evidence \
+hints, list the numeric `id` values (from the hint list) that most \
+directly support the answer.
+- If the answer is entirely SMILES-derivable (purely structural; no \
+functional claim), use an empty list: `"evidence_ids": []`.
+- Never fabricate IDs. Only list IDs that actually appear in the hint list \
+you were given. If uncertain, omit the ID rather than guess.
+- This field is used downstream to audit grounding; accuracy matters more \
+than exhaustiveness.
 
 OUTPUT FORMAT (JSON only — no prose before or after the JSON object):
 {
@@ -154,7 +166,8 @@ OUTPUT FORMAT (JSON only — no prose before or after the JSON object):
     {
       "topic": "<string: taxonomy key or a self-invented tag>",
       "question": "<question about the compound>",
-      "answer": "<answer grounded in SMILES (structural) and/or evidence (functional)>"
+      "answer": "<answer grounded in SMILES (structural) and/or evidence (functional)>",
+      "evidence_ids": [<integer IDs from the hint list, or [] for purely structural>]
     },
     ...
   ]

@@ -14,11 +14,32 @@ a summary.json with dataset-wide statistics.
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import logging
 from collections import Counter
 from dataclasses import dataclass, field
 from pathlib import Path
+
+
+# Canonical train/dev/test split assignment.
+#
+# Split is deterministic per CID via SHA-256 → bucket 0..99. This gives every
+# downstream consumer the same split without having to ship a split manifest.
+# Ratios: 80 / 10 / 10 (train / dev / test). Test bucket (90..99) is reserved
+# for in-distribution held-out eval; the separately-generated canary set is
+# the contamination-sensitive test (see CONTAMINATION.md) and carries its own
+# split="canary" assignment.
+def assign_split(cid: int, is_canary: bool = False) -> str:
+    if is_canary:
+        return "canary"
+    digest = hashlib.sha256(str(int(cid)).encode()).hexdigest()
+    bucket = int(digest[:8], 16) % 100
+    if bucket < 80:
+        return "train"
+    if bucket < 90:
+        return "dev"
+    return "test"
 
 from chem2textqa.qa_pipeline.config import (
     PHASE_0_EVIDENCE,
@@ -144,6 +165,7 @@ def assemble_dataset(
                 "phase2_answer": p2.get("phase2_answer", ""),
                 "verdict": verdict,
                 "judge_reasoning": p3.get("judge_reasoning", ""),
+                "evidence_ids": qa.get("evidence_ids", []) or [],
             })
 
         if not qa_pairs_out:
@@ -152,6 +174,7 @@ def assemble_dataset(
         stats.compounds += 1
         record = {
             "cid": cid,
+            "split": assign_split(cid, is_canary=p0.get("is_canary", False)),
             "name": p0.get("name", ""),
             "iupac_name": p0.get("iupac_name", ""),
             "smiles": p0.get("smiles", ""),
