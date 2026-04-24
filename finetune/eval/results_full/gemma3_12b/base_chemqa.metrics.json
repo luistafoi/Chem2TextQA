@@ -1,0 +1,8 @@
+{
+  "n": 26205,
+  "file": "/mnt/data_lab/ChemQA/eval/results_full/gemma3_12b/base_chemqa.jsonl",
+  "CIDEr": 0.005519652165982152,
+  "BLEU-1": 0.17151251578433915,
+  "BLEU-4": 0.019600824201571103,
+  "ROUGE-L": 0.13934655163932685
+}

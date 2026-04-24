@@ -37,11 +37,7 @@ smiles_qa_demo.ipynb
 CLAUDE.md
 
 # Experimental / historical shell scripts — kept locally for
-# reproducibility, not for distribution. The canonical pipeline scripts
-# (run_build_dataset_v2.sh, run_cleanup_v2.sh, run_pmc_download.sh,
-# run_phase0_full_premium.sh, run_qa_full_premium.sh, run_1000_pilot.sh,
-# run_ablation_probe.sh, run_smiles_swap_probe.sh, run_softrule_probes.sh)
-# stay tracked — these don't.
+# reproducibility, not for distribution.
 run_100_pilot_improved.sh
 run_20_pilot_softrule.sh
 run_500_pilot.sh
@@ -53,6 +49,33 @@ run_qa_phase0.sh
 run_qa_phase1.sh
 run_qa_phase2.sh
 run_qa_phase3.sh
+
+# Probe / validation / smoke scripts — used once for dataset
+# characterisation and design validation. Kept locally; may be
+# restored for paper camera-ready if reviewers want them.
+run_ablation_probe.sh
+run_smiles_swap_probe.sh
+run_softrule_probes.sh
+run_full_pipeline_smoke.sh
+run_1000_pilot.sh
+scripts/ablation_probe.py
+scripts/smiles_swap_probe.py
+scripts/empty_evidence_probe.py
+scripts/measure_seed_variance.py
+scripts/audit_redaction.py
+scripts/analyze_coverage.py
+
+# Fine-tune heavy outputs (checkpoints, raw prediction JSONLs,
+# training data copy, logs). The small metrics.json + summary.md files
+# stay tracked so the headline numbers are in the repo.
+finetune/data/
+finetune/checkpoints/
+finetune/logs/
+finetune/eval/results/*/
+finetune/eval/results_full/*/base_chemqa.jsonl
+finetune/eval/results_full/*/ft_chemqa.jsonl
+finetune/eval/results_full/*/*.log
+finetune/eval/results_full/*/*.jsonl
 
 # OS
 .DS_Store

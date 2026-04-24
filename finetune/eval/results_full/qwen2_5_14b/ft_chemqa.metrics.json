@@ -1,0 +1,8 @@
+{
+  "n": 26205,
+  "file": "/mnt/data_lab/ChemQA/eval/results_full/qwen2_5_14b/ft_chemqa.jsonl",
+  "CIDEr": 0.27575537752567597,
+  "BLEU-1": 0.38364121581811234,
+  "BLEU-4": 0.11692113285082874,
+  "ROUGE-L": 0.2759856575057645
+}
